@@ -1,0 +1,47 @@
+ffmpeg -ss 0.000000 -itsoffset  0.000000   -i t_video.mp4  -t 9.920500    -codec copy  -segment_format mpegts stream0.ts
+ffmpeg -ss 9.920500 -itsoffset  9.920500   -i t_video.mp4  -t 19.880500     -codec copy  -segment_format mpegts stream1.ts
+ffmpeg -ss 19.880500 -itsoffset  19.880500   -i t_video.mp4  -t 29.800500    -codec copy  -segment_format mpegts stream2.ts
+ffmpeg -ss 29.800500 -itsoffset  29.800500   -i t_video.mp4  -t 39.760500    -codec copy  -segment_format mpegts stream3.ts
+ffmpeg -ss 39.760500 -itsoffset  39.760500   -i t_video.mp4  -t 49.720500    -codec copy  -segment_format mpegts stream4.ts
+---------------------
+=--------------
+ffmpeg -ss 0.000000 -itsoffset  0.000000   -i t_video.mp4  -t 9.920500     -codec copy  -segment_format mpegts stream0.ts
+ffmpeg -ss 9.920500 -itsoffset  9.920500   -i t_video.mp4  -t 19.880500   -filter_complex "[0:v] setpts=PTS-STARTPTS "  -c:v h264  -segment_format mpegts strea2m1.ts
+ffmpeg -ss 9.920500 -itsoffset  9.920500   -i t_video.mp4  -t 19.880500   -vf  "format=yuv444p, drawtext=text='Title of this Video':fontcolor=white:fontsize=24:x=(w-tw)/2:y=(h/PHI)+th, format=yuv420p" -c:v h264  -segment_format mpegts strea2m1.ts
+ffmpeg -ss 9.920500 -itsoffset  9.920500   -i t_video.mp4  -t 19.880500   -vf  "format=yuv444p , drawtext=text='Title of this Video':fontcolor=white:fontsize=24:x=(w-tw)/2:y=(h/PHI)+th:enable='between(t,2,6)'" -c:v h264  -segment_format mpegts strea2m1.ts
+ffmpeg -ss 19.880500 -itsoffset  19.880500   -i t_video.mp4  -t 29.800500    -codec copy  -segment_format mpegts stream2.ts
+ffmpeg -ss 29.800500 -itsoffset  29.800500   -i t_video.mp4  -t 39.760500    -codec copy  -segment_format mpegts stream3.ts
+ffmpeg -ss 39.760500 -itsoffset  39.760500   -i t_video.mp4  -t 49.720500    -codec copy  -segment_format mpegts stream4.ts
+************ffmpeg -ss 9.920500 -itsoffset  9.920500   -i t_video.mp4  -t 19.880500   -vf  "format=yuv444p, drawtext=text='Title of this Video':fontcolor=white:fontsize=24:x=(w-tw)/2:y=(h/PHI)+th, format=yuv420p"  -acodec copy  -c:v h264  -segment_format mpegts strea2m1.ts
+
+------------
+ffmpeg -ss 0.000000 -itsoffset  0.000000   -i t_video.mp4  -t 1.210000    -codec copy  stream0.mkv
+ffmpeg -ss 1.210000 -itsoffset  1.210000   -i t_video.mp4  -t 7.049000    -codec copy  stream1.mkv
+ffmpeg -ss 7.049000 -itsoffset  7.049000   -i t_video.mp4  -t 8.717000    -codec copy  stream2.mkv
+ffmpeg -ss 8.717000 -itsoffset  8.717000   -i t_video.mp4  -t 10.177000    -codec copy  stream3.mkv
+ffmpeg -ss 10.177000 -itsoffset  10.177000   -i t_video.mp4  -t 14.348000    -codec copy  stream4.mkv
+ffmpeg -ss 14.348000 -itsoffset  14.348000   -i t_video.mp4  -t 15.974000    -codec copy  stream5.mkv
+
+
+-------------
+ffmpeg -ss 0.000000 -itsoffset  0.000000   -i t_video.mp4  -t 1.210000    -codec copy  stream0.mp4
+ffmpeg -ss 1.210000 -itsoffset  1.210000   -i t_video.mp4  -t 7.049000    -codec copy  stream1.mp4
+ffmpeg -ss 7.049000 -itsoffset  7.049000   -i t_video.mp4  -t 8.717000    -codec copy  stream2.mp4
+ffmpeg -ss 8.717000 -itsoffset  8.717000   -i t_video.mp4  -t 10.177000    -codec copy  stream3.mp4
+ffmpeg -ss 10.177000 -itsoffset  10.177000   -i t_video.mp4  -t 14.348000    -codec copy  stream4.mp4
+ffmpeg -ss 14.348000 -itsoffset  14.348000   -i t_video.mp4  -t 15.974000    -codec copy  stream5.mp4
+-------------
+ffmpeg -i stream0.mp4 -codec copy -bsf:v h264_mp4toannexb  -flags -global_header -segment_format mpegts stream0.ts
+ffmpeg -i stream1.mp4 -codec copy -bsf:v h264_mp4toannexb -flags -global_header -segment_format mpegts stream1.ts
+ffmpeg -i stream2.mp4 -codec copy -bsf:v h264_mp4toannexb -flags -global_header -segment_format mpegts stream2.ts
+ffmpeg -i stream3.mp4 -codec copy -bsf:v h264_mp4toannexb -flags -global_header -segment_format mpegts stream3.ts
+ffmpeg -i stream4.mp4 -codec copy -bsf:v h264_mp4toannexb -flags -global_header -segment_format mpegts stream4.ts
+ffmpeg -i stream5.mp4 -codec copy -bsf:v h264_mp4toannexb -flags -global_header -segment_format mpegts stream5.ts
+
+----------
+ffmpeg -i stream0.mp4 -codec copy -flags -global_header -segment_format mpegts stream0.ts
+ffmpeg -i stream1.mp4 -codec copy -flags -global_header -segment_format mpegts stream1.ts
+ffmpeg -i stream2.mp4 -codec copy -flags -global_header -segment_format mpegts stream2.ts
+ffmpeg -i stream3.mp4 -codec copy -flags -global_header -segment_format mpegts stream3.ts
+ffmpeg -i stream4.mp4 -codec copy -flags -global_header -segment_format mpegts stream4.ts
+ffmpeg -i stream5.mp4 -codec copy -flags -global_header -segment_format mpegts stream5.ts
