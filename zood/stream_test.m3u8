@@ -1,0 +1,17 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:10
+#EXT-X-MEDIA-SEQUENCE:1
+#EXTINF:0, 
+script_stream.m3u80.ts
+#EXTINF:9.920500, 
+script_stream.m3u81.ts
+#EXTINF:9.960000, 
+script_stream.m3u82.ts
+#EXTINF:9.920000, 
+script_stream.m3u83.ts
+#EXTINF:9.960000, 
+script_stream.m3u84.ts
+#EXTINF:9.960000, 
+script_stream.m3u85.ts
+#EXT-X-ENDLIST
