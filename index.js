@@ -1,38 +1,36 @@
-const HLSServer = require('hls-server')
-const http = require('http')
+const fs = require('fs');
+const http = require('http');
+const sleep = require('sleep');
 const express = require('express');
-var fs = require('fs')
-var app = express();
+const readline = require('readline');
+const ffmpeg = require('fluent-ffmpeg');
+const HLSServer = require('hls-server');
+const subprocess = require('child_process');
 
+const textVar='amirsorouri00'
 const fileDirs = '/home/amirsorouri/Desktop/stream/mohsen/zood'; // Directory that input files are stored
 const movieLocs = '/home/amirsorouri/Desktop/stream/mohsen/zood/zood.mp4'; // Directory that input files are stored
-
-var fs = require('fs')
-textVar='amirsorouri00'
-var ffmpeg = require('fluent-ffmpeg');
-const readline = require('readline');
 const readInterface = readline.createInterface({
   input: fs.createReadStream(fileDirs+'/keyFrameTimeList.txt'),
   console: false
 });
 
-var mapStart = new Map(); 
-var mapEnd = new Map();
- 
+var app = express();
+
+var mapStart = new Map();
+console.log(mapStart); 
+var mapEnd = new Map(); 
 let ii = 0;
 readInterface.on('line', function (line) {
   mapStart.set("stream".concat(ii).concat(".ts"), line)
   if(ii==0)
-  {
     console.log(mapStart)
-  }
-  if (ii > 0) {
+  
+  if (ii > 0) 
     mapEnd.set("stream".concat(ii - 1).concat(".ts"), line)
-
-  }
+  
   ii++
 });
-
 
 const server = http.createServer(app)
 
@@ -62,8 +60,95 @@ const hls = new HLSServer(server, {
       var final = result[result.length -1];
       console.log('its final',final)
       console.log(mapStart.get(final))
-      
-      var proc = ffmpeg(movieLocs) 
+
+      var rhhh = num_subst(final);
+      console.log('ts number: ',rhhh);
+
+      if (fs.existsSync(req.filePath)) {
+        // Do something
+        console.log('yohooooooo file exists', req.filePath);
+        callback(null, fs.createReadStream(req.filePath))
+        // subprocessor(Number(rhhh));
+      }
+      else{
+        console.log('eybabaaaaa nabood kee');
+        final = 'stream'.concat(rhhh).concat('.ts');
+        var proc = ffmpeg_vodTSProvider(movieLocs, final);
+        
+        var tmp = Number(rhhh);
+        eybaba_subprocessor(tmp);
+        sleep.msleep(3000);
+
+        callback(null, proc);        
+      }
+    }
+  }
+});
+
+
+var httpAttach = require('http-attach')
+function yourMiddleware(req, res, next) {
+  // set your headers here
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next()
+}
+httpAttach(server, yourMiddleware)
+
+server.listen(8182, () => {
+  console.log('success');
+});
+
+
+function num_subst(st) {
+  var substr = st.replace('stream', '').replace('.ts', '');
+  return substr;
+}
+
+function eybaba_subprocessor(tsNo){
+  tmp = tsNo;
+  for (var i = 0; i<3;i++, tmp++) {
+
+    final = 'stream'.concat(tmp).concat('.ts');
+    if (fs.existsSync(fileDirs+'/'+final)) {
+      // Do something
+      console.log('another process doing it.')
+      continue;
+    }
+    else{
+      // console.log(i, tmp, final, mapStart.get(final));
+      var mapStartstr = JSON.stringify(Array.from( mapStart.entries()));
+      var mapEndstr = JSON.stringify(Array.from( mapEnd.entries()));
+      sbproc = subprocess.fork('subprocess.js', [mapStartstr, mapEndstr, 
+        movieLocs, tmp, fileDirs, textVar]);
+      sbproc.send('segment');
+    }
+    
+  }
+}
+
+function subprocessor(tsNo){
+  var tmp = tsNo;
+  console.log("---------- tmp = ", tmp, "------------")
+  for (var i = 3*(tmp-1) + 1; i<3*(tmp-1)+3 && i <= 5; i++) {
+    final = 'stream'.concat(i).concat('.ts');
+    if (fs.existsSync(fileDirs+'/'+final)) {
+      // Do something
+      console.log('SUBPROCESSOR: another process doing it.')
+      continue;
+    }
+    else{
+     
+      console.log(i, tmp, final, mapStart.get(final));
+      sbproc = subprocess.fork('subprocess.js', [mapStart.get(final), mapEnd.get(final), 
+        movieLocs, tmp, fileDirs, textVar]);
+      sbproc.send('segment');
+    }
+    
+  }
+}
+
+function ffmpeg_vodTSProvider(movie, final){
+  var proc = ffmpeg(movie) 
       .videoFilters({
         filter: 'drawtext',
         options: {
@@ -90,28 +175,11 @@ const hls = new HLSServer(server, {
         '-t '.concat(mapEnd.get(final))
       ])
       .on('end', function (stdout, stderr) {
-        console.log('Transcoding succeeded !', req.filePath);
+        console.log('Transcoding succeeded !', fileDirs);
       })
       .on('error', function (err) {
         console.log('an error happened: ' + err.message);
       })
       // .pipe(res)
-
-      callback(null, proc)
-    }
-
-  }
-});
-
-var httpAttach = require('http-attach')
-
-function yourMiddleware(req, res, next) {
-  // set your headers here
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  next()
+      return proc;
 }
-httpAttach(server, yourMiddleware)
-
-server.listen(8182, () => {
-  console.log('success');
-});

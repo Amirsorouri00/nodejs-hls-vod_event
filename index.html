@@ -10,8 +10,6 @@
     <button type="button" onclick="loadDoc()">set name</button>
 
     <input id="textB" type="text" name="lname"><br>
-
-
     <script>
 
 if (Hls.isSupported()) {
@@ -34,8 +32,7 @@ if (Hls.isSupported()) {
       console.log('hls is suported');
         var video = document.getElementById('video');
 
-
-        var config = {
+      var config = {
       autoStartLoad: true,
       startPosition: -1,
       debug: false,
@@ -114,8 +111,7 @@ if (Hls.isSupported()) {
         hls.on(Hls.Events.MANIFEST_PARSED,function()
         {
           console.log('hls event ')
-
-            video.play();
+          video.play();
         });
     }
     else if (video.canPlayType('application/vnd.apple.mpegurl'))
